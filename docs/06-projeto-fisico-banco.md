@@ -1,164 +1,148 @@
-# Projeto Fisico do Banco de Dados
+# Projeto Físico da Base de Dados
 
 ## Finalidade
 
-Este documento descreve o projeto fisico do banco de dados do Wiigu. O objetivo e registrar tabelas, colunas, tipos, chaves, relacionamentos e o proposito textual de cada tabela.
+Este documento descreve o projeto físico da base de dados do sistema Wiigu. O objetivo é registar a estrutura de persistência, detalhando tabelas, colunas, tipos de dados, chaves (Primárias e Estrangeiras), restrições de nulidade, relacionamentos e o propósito contextual de cada tabela.
 
-## Visao geral
+## Visão Geral
 
-O banco de dados armazena usuarios, projetos, participacao em projetos, quadros Kanban, colunas, raias, cartoes e movimentacoes. As metricas Kanban sao calculadas a partir desses dados, principalmente datas dos cartoes e historico de movimentacoes.
+A base de dados armazena informações relativas a utilizadores, projetos, associações de membros, quadros Kanban, colunas, raias, cartões e o histórico de movimentações. As métricas ágeis (Kanban) são calculadas dinamicamente a partir destes dados, dependendo sobretudo das marcações temporais (*timestamps*) dos cartões e dos registos cronológicos de transição.
 
-## Tabela: users
+> **Nota Arquitetural:** O protótipo utiliza o SGBD **SQLite**. Por conseguinte, os campos de data e hora são armazenados utilizando o tipo `TEXT` (no formato padrão ISO-8601), conforme a especificação do motor.
 
-Proposito: armazenar usuarios cadastrados no sistema.
+---
 
-| Coluna | Tipo | Chave | Descricao |
-| --- | --- | --- | --- |
-| `id` | INTEGER | PK | Identificador interno do usuario. |
-| `name` | TEXT |  | Nome do usuario. |
-| `email` | TEXT | UNIQUE | Email usado para login. |
-| `google_sub` | TEXT | UNIQUE | Identificador da conta Google, quando o login federado estiver configurado. |
-| `password_hash` | TEXT |  | Senha armazenada de forma protegida. |
-| `created_at` | TEXT |  | Data de criacao do registro. |
+## Dicionário de Dados
 
-## Tabela: projects
+### Tabela: `users`
+**Propósito:** Armazenar os utilizadores cadastrados e credenciados no sistema.
 
-Proposito: representar projetos gerenciados no Wiigu.
+| Coluna | Tipo | Chave | Obrigatório | Descrição |
+| :--- | :--- | :--- | :---: | :--- |
+| `id` | INTEGER | PK | Sim | Identificador interno e único do utilizador. |
+| `name` | TEXT | - | Sim | Nome de exibição do utilizador. |
+| `email` | TEXT | UNIQUE | Sim | Endereço de e-mail utilizado para autenticação. |
+| `google_sub` | TEXT | UNIQUE | Não | Identificador da conta Google (usado no *login* federado OAuth). |
+| `password_hash` | TEXT | - | Não | *Hash* criptográfico da senha (pode ser nulo se o registo for via Google). |
+| `created_at` | TEXT | - | Sim | Data e hora de criação do registo. |
 
-| Coluna | Tipo | Chave | Descricao |
-| --- | --- | --- | --- |
-| `id` | INTEGER | PK | Identificador interno do projeto. |
-| `name` | TEXT |  | Nome do projeto. |
-| `description` | TEXT |  | Descricao do projeto. |
-| `owner_id` | INTEGER | FK users.id | Usuario criador ou responsavel pelo projeto. |
-| `created_at` | TEXT |  | Data de criacao do projeto. |
+### Tabela: `projects`
+**Propósito:** Representar os projetos geridos no ecossistema Wiigu.
 
-## Tabela: project_members
+| Coluna | Tipo | Chave | Obrigatório | Descrição |
+| :--- | :--- | :--- | :---: | :--- |
+| `id` | INTEGER | PK | Sim | Identificador interno do projeto. |
+| `name` | TEXT | - | Sim | Nome comercial ou título do projeto. |
+| `description` | TEXT | - | Não | Descrição detalhada do escopo do projeto. |
+| `owner_id` | INTEGER | FK (`users.id`) | Sim | Utilizador criador ou responsável primário pelo projeto. |
+| `created_at` | TEXT | - | Sim | Data e hora de criação do projeto. |
 
-Proposito: associar usuarios a projetos.
+### Tabela: `project_members`
+**Propósito:** Associar múltiplos utilizadores a múltiplos projetos (Relacionamento N:M).
 
-| Coluna | Tipo | Chave | Descricao |
-| --- | --- | --- | --- |
-| `id` | INTEGER | PK | Identificador da associacao. |
-| `project_id` | INTEGER | FK projects.id | Projeto associado. |
-| `user_id` | INTEGER | FK users.id | Usuario participante. |
-| `role` | TEXT |  | Papel do usuario no projeto. |
-| `created_at` | TEXT |  | Data de criacao da associacao. |
+| Coluna | Tipo | Chave | Obrigatório | Descrição |
+| :--- | :--- | :--- | :---: | :--- |
+| `id` | INTEGER | PK | Sim | Identificador da associação. |
+| `project_id` | INTEGER | FK (`projects.id`) | Sim | Referência do projeto associado. |
+| `user_id` | INTEGER | FK (`users.id`) | Sim | Referência do utilizador participante. |
+| `role` | TEXT | - | Sim | Papel do utilizador no projeto (ex: *Gestor*, *Membro*). |
+| `created_at` | TEXT | - | Sim | Data e hora de criação da associação. |
 
-Restricao: a combinacao `project_id` e `user_id` deve ser unica.
+> **Restrição de Integridade:** A combinação combinada de `project_id` e `user_id` deve ser única (`UNIQUE`), impedindo que o mesmo utilizador seja associado repetidamente ao mesmo projeto.
 
-## Tabela: boards
+### Tabela: `boards`
+**Propósito:** Armazenar os quadros Kanban pertencentes a um projeto.
 
-Proposito: armazenar quadros Kanban de um projeto.
+| Coluna | Tipo | Chave | Obrigatório | Descrição |
+| :--- | :--- | :--- | :---: | :--- |
+| `id` | INTEGER | PK | Sim | Identificador interno do quadro. |
+| `project_id` | INTEGER | FK (`projects.id`) | Sim | Projeto ao qual o quadro pertence. |
+| `name` | TEXT | - | Sim | Nome de identificação do quadro. |
+| `description` | TEXT | - | Não | Descrição do propósito do quadro. |
+| `created_at` | TEXT | - | Sim | Data e hora de criação do quadro. |
 
-| Coluna | Tipo | Chave | Descricao |
-| --- | --- | --- | --- |
-| `id` | INTEGER | PK | Identificador interno do quadro. |
-| `project_id` | INTEGER | FK projects.id | Projeto ao qual o quadro pertence. |
-| `name` | TEXT |  | Nome do quadro. |
-| `description` | TEXT |  | Descricao do quadro. |
-| `created_at` | TEXT |  | Data de criacao do quadro. |
+### Tabela: `board_columns`
+**Propósito:** Representar as colunas (fases do fluxo de valor) de um quadro Kanban.
 
-## Tabela: board_columns
+| Coluna | Tipo | Chave | Obrigatório | Descrição |
+| :--- | :--- | :--- | :---: | :--- |
+| `id` | INTEGER | PK | Sim | Identificador interno da coluna. |
+| `board_id` | INTEGER | FK (`boards.id`) | Sim | Quadro ao qual a coluna pertence. |
+| `name` | TEXT | - | Sim | Nome da coluna (ex: `A FAZER`, `FAZENDO`, `FEITO`). |
+| `position` | INTEGER | - | Sim | Ordem de exibição sequencial da coluna da esquerda para a direita. |
+| `wip_limit` | INTEGER | - | Não | Número máximo de cartões permitidos (Limite de *Work in Progress*). |
+| `created_at` | TEXT | - | Sim | Data e hora de criação da coluna. |
 
-Proposito: representar colunas do fluxo Kanban de um quadro.
+### Tabela: `swimlanes`
+**Propósito:** Representar as raias horizontais de separação dentro de um quadro Kanban.
 
-| Coluna | Tipo | Chave | Descricao |
-| --- | --- | --- | --- |
-| `id` | INTEGER | PK | Identificador interno da coluna. |
-| `board_id` | INTEGER | FK boards.id | Quadro ao qual a coluna pertence. |
-| `name` | TEXT |  | Nome da coluna. |
-| `position` | INTEGER |  | Ordem de exibicao da coluna. |
-| `wip_limit` | INTEGER |  | Numero maximo de cartoes permitido na coluna. |
-| `created_at` | TEXT |  | Data de criacao da coluna. |
+| Coluna | Tipo | Chave | Obrigatório | Descrição |
+| :--- | :--- | :--- | :---: | :--- |
+| `id` | INTEGER | PK | Sim | Identificador interno da raia. |
+| `board_id` | INTEGER | FK (`boards.id`) | Sim | Quadro ao qual a raia pertence. |
+| `name` | TEXT | - | Sim | Nome de identificação da raia. |
+| `position` | INTEGER | - | Sim | Ordem de exibição vertical da raia. |
+| `created_at` | TEXT | - | Sim | Data e hora de criação da raia. |
 
-Observacao: cada quadro deve possuir as colunas obrigatorias `A FAZER`, `FAZENDO` e `FEITO`.
+### Tabela: `cards`
+**Propósito:** Armazenar os cartões de atividades (unidades de trabalho).
 
-## Tabela: swimlanes
+| Coluna | Tipo | Chave | Obrigatório | Descrição |
+| :--- | :--- | :--- | :---: | :--- |
+| `id` | INTEGER | PK | Sim | Identificador interno do cartão. |
+| `code` | TEXT | UNIQUE | Sim | Código de identificação visual (ex: WIG-101). |
+| `board_id` | INTEGER | FK (`boards.id`) | Sim | Quadro ao qual o cartão pertence. |
+| `column_id` | INTEGER | FK (`board_columns.id`) | Sim | Coluna atual onde o cartão se encontra. |
+| `swimlane_id` | INTEGER | FK (`swimlanes.id`) | Não | Raia atual do cartão (pode não estar atribuído a uma). |
+| `title` | TEXT | - | Sim | Nome/Título sumário do cartão. |
+| `description` | TEXT | - | Não | Descrição detalhada da atividade. |
+| `assignee_id` | INTEGER | FK (`users.id`) | Não | Utilizador responsável pela execução da tarefa. |
+| `assignee_name` | TEXT | - | Não | Desnormalização para facilitar a demonstração simples sem *JOIN*. |
+| `priority` | TEXT | - | Sim | Nível de prioridade (ex: Baixa, Média, Alta). |
+| `due_date` | TEXT | - | Não | Data limite pretendida para conclusão (*Deadline*). |
+| `created_at` | TEXT | - | Sim | Data e hora em que o cartão foi instanciado. |
+| `started_at` | TEXT | - | Não | Marcação da primeira entrada numa coluna de execução (ex: `FAZENDO`). |
+| `completed_at` | TEXT | - | Não | Marcação temporal de entrada na coluna de finalização (ex: `FEITO`). |
 
-Proposito: representar raias de um quadro Kanban.
+### Tabela: `card_movements`
+**Propósito:** Registar transações imutáveis de movimentação para garantir a rastreabilidade e permitir a extração de métricas.
 
-| Coluna | Tipo | Chave | Descricao |
-| --- | --- | --- | --- |
-| `id` | INTEGER | PK | Identificador interno da raia. |
-| `board_id` | INTEGER | FK boards.id | Quadro ao qual a raia pertence. |
-| `name` | TEXT |  | Nome da raia. |
-| `position` | INTEGER |  | Ordem de exibicao da raia. |
-| `created_at` | TEXT |  | Data de criacao da raia. |
+| Coluna | Tipo | Chave | Obrigatório | Descrição |
+| :--- | :--- | :--- | :---: | :--- |
+| `id` | INTEGER | PK | Sim | Identificador interno da movimentação. |
+| `card_id` | INTEGER | FK (`cards.id`) | Sim | Referência ao cartão que foi movimentado. |
+| `from_column_id` | INTEGER | FK (`board_columns.id`) | Não | Coluna de origem (nulo se for criação). |
+| `to_column_id` | INTEGER | FK (`board_columns.id`) | Não | Coluna de destino (nulo se for exclusão). |
+| `from_swimlane_id` | INTEGER | FK (`swimlanes.id`) | Não | Raia de origem. |
+| `to_swimlane_id` | INTEGER | FK (`swimlanes.id`) | Não | Raia de destino. |
+| `moved_at` | TEXT | - | Sim | Marcação temporal exata da transação de movimentação. |
 
-## Tabela: cards
+---
 
-Proposito: armazenar cartoes de atividade.
+## Relacionamentos Principais (Cardinalidade)
 
-| Coluna | Tipo | Chave | Descricao |
-| --- | --- | --- | --- |
-| `id` | INTEGER | PK | Identificador interno do cartao. |
-| `code` | TEXT | UNIQUE | Identificador visivel do cartao. |
-| `board_id` | INTEGER | FK boards.id | Quadro ao qual o cartao pertence. |
-| `column_id` | INTEGER | FK board_columns.id | Coluna atual do cartao. |
-| `swimlane_id` | INTEGER | FK swimlanes.id | Raia atual do cartao. |
-| `title` | TEXT |  | Nome do cartao. |
-| `description` | TEXT |  | Descricao da atividade. |
-| `assignee_id` | INTEGER | FK users.id | Usuario responsavel, quando cadastrado. |
-| `assignee_name` | TEXT |  | Nome do responsavel para demonstracao simples. |
-| `priority` | TEXT |  | Prioridade do cartao. |
-| `due_date` | TEXT |  | Data limite para termino. |
-| `created_at` | TEXT |  | Data de criacao do cartao. |
-| `started_at` | TEXT |  | Data da primeira entrada em `FAZENDO`. |
-| `completed_at` | TEXT |  | Data de entrada em `FEITO`. |
+- **1:N** – Um utilizador (`users`) pode ser detentor de vários projetos (`projects`).
+- **N:M** – Um projeto possui vários membros e um utilizador participa em vários projetos (resolvido pela tabela associativa `project_members`).
+- **1:N** – Um projeto (`projects`) pode conter múltiplos quadros (`boards`).
+- **1:N** – Um quadro (`boards`) contém múltiplas colunas (`board_columns`) e múltiplas raias (`swimlanes`).
+- **1:N** – Um quadro (`boards`) contém múltiplos cartões (`cards`).
+- **1:N** – Um cartão (`cards`) tem uma chave estrangeira para uma coluna e uma raia específica.
+- **1:N** – Um cartão (`cards`) gera vários registos históricos de transição (`card_movements`).
 
-## Tabela: card_movements
-
-Proposito: registrar movimentacoes de cartoes para permitir rastreabilidade e calculo de metricas.
-
-| Coluna | Tipo | Chave | Descricao |
-| --- | --- | --- | --- |
-| `id` | INTEGER | PK | Identificador interno da movimentacao. |
-| `card_id` | INTEGER | FK cards.id | Cartao movimentado. |
-| `from_column_id` | INTEGER | FK board_columns.id | Coluna de origem. |
-| `to_column_id` | INTEGER | FK board_columns.id | Coluna de destino. |
-| `from_swimlane_id` | INTEGER | FK swimlanes.id | Raia de origem. |
-| `to_swimlane_id` | INTEGER | FK swimlanes.id | Raia de destino. |
-| `moved_at` | TEXT |  | Data da movimentacao. |
-
-## Relacionamentos principais
-
-- Um usuario pode possuir varios projetos.
-- Um projeto pode ter varios membros.
-- Um projeto pode ter varios quadros.
-- Um quadro possui varias colunas.
-- Um quadro possui varias raias.
-- Um quadro possui varios cartoes.
-- Um cartao pertence a uma coluna e a uma raia.
-- Um cartao pode ter varias movimentacoes.
-- Uma movimentacao pode registrar mudanca de coluna, mudanca de raia ou ambas.
-
-## Diagrama fisico
+## Diagrama Físico de Entidade-Relacionamento (ERD)
 
 ```mermaid
 erDiagram
-    users ||--o{ projects : owns
-    users ||--o{ project_members : participates
-    projects ||--o{ project_members : has
-    projects ||--o{ boards : contains
-    boards ||--o{ board_columns : has
-    boards ||--o{ swimlanes : has
-    boards ||--o{ cards : has
-    board_columns ||--o{ cards : current_column
-    swimlanes ||--o{ cards : current_lane
-    users ||--o{ cards : assigned
-    cards ||--o{ card_movements : records
-    board_columns ||--o{ card_movements : from_or_to
-    swimlanes ||--o{ card_movements : from_or_to
-```
-
-## Metricas derivadas
-
-- Work-in-progress: quantidade de cartoes atualmente em colunas que ainda nao representam conclusao.
-- Throughput: quantidade de cartoes concluidos em determinado periodo.
-- Lead time: diferenca entre `created_at` e `completed_at`.
-- Cycle time: diferenca entre `started_at` e `completed_at`.
-
-## Relacao com outros artefatos
-
-O banco fisico suporta as historias de usuario, os wireframes e o prototipo. Qualquer mudanca em entidades, campos ou relacionamentos deve ser refletida na arquitetura, na UX e nos testes.
+    users ||--o{ projects : "owns (1:N)"
+    users ||--o{ project_members : "participates (1:N)"
+    projects ||--o{ project_members : "has (1:N)"
+    projects ||--o{ boards : "contains (1:N)"
+    boards ||--o{ board_columns : "has (1:N)"
+    boards ||--o{ swimlanes : "has (1:N)"
+    boards ||--o{ cards : "contains (1:N)"
+    board_columns ||--o{ cards : "holds (1:N)"
+    swimlanes ||--o{ cards : "holds (1:N)"
+    users ||--o{ cards : "assigned_to (1:N)"
+    cards ||--o{ card_movements : "generates (1:N)"
+    board_columns ||--o{ card_movements : "from_or_to (1:N)"
+    swimlanes ||--o{ card_movements : "from_or_to (1:N)"

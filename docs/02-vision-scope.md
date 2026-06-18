@@ -1,92 +1,81 @@
-# Vision & Scope do Sistema Wiigu
+# Visão & Escopo do Sistema Wiigu
 
 ## Finalidade
 
-Este documento apresenta a visao geral do sistema Wiigu, seu problema, publico interessado, ambiente de uso, necessidades, funcionalidades principais, requisitos nao funcionais resumidos e escopo da solucao.
+Este documento apresenta a visão geral do sistema Wiigu, descrevendo o problema que se propõe a resolver, o público interessado (*stakeholders*), o ambiente de uso, as necessidades principais, um resumo de suas funcionalidades e requisitos não funcionais, bem como as delimitações claras do escopo da solução.
 
 ## Problema
 
-Equipes pequenas e grupos academicos frequentemente acompanham atividades de projeto por mensagens, planilhas ou anotacoes dispersas. Essa forma de organizacao dificulta visualizar o andamento do trabalho, identificar gargalos, controlar responsabilidades e medir o fluxo das entregas.
+Equipes pequenas e grupos acadêmicos frequentemente acompanham atividades de projeto por meio de mensagens, planilhas ou anotações dispersas. Essa forma fragmentada de organização dificulta a visualização do andamento do trabalho, a identificação de gargalos, o controle de responsabilidades e a medição do fluxo das entregas.
 
-Quando nao existe um quadro visual compartilhado, tarefas podem ficar esquecidas, responsabilidades ficam pouco claras e a equipe perde capacidade de acompanhar o progresso real do projeto.
+Quando não existe um quadro visual compartilhado e integrado, tarefas podem ser esquecidas, as responsabilidades ficam pouco claras e a equipe perde a capacidade de acompanhar o progresso real e o estado atual do projeto.
 
-## Posicionamento do sistema
+## Posicionamento do Sistema
 
-O Wiigu e uma aplicacao web de apoio a gestao visual de projetos por Kanban. O sistema permite organizar projetos em quadros, dividir o trabalho em raias, registrar atividades em cartoes, mover cartoes entre colunas e acompanhar metricas basicas do fluxo.
+O Wiigu é uma aplicação *web* de apoio à gestão visual de projetos utilizando a abordagem Kanban. O sistema permite organizar projetos em quadros, dividir o trabalho em raias (*swimlanes*), registrar atividades em cartões, movimentar cartões entre colunas de fluxo e acompanhar métricas básicas do projeto.
 
-O sistema nao pretende substituir plataformas profissionais completas de gestao de projetos. Seu objetivo e oferecer um prototipo funcional, simples e coerente com os conceitos de Engenharia de Software, adequado ao escopo academico do trabalho.
+O sistema não tem a pretensão de substituir plataformas profissionais completas e de grande escala para gestão de projetos (como Jira ou Azure DevOps). Seu objetivo principal é oferecer um protótipo funcional, com interface simples, coeso e estritamente alinhado aos conceitos de Engenharia de Software, sendo plenamente adequado ao escopo acadêmico do trabalho.
 
-## Stakeholders
+## Stakeholders (Partes Interessadas)
 
-### Usuario comum
+- **Usuário Comum:** Pessoa que acessa o sistema para visualizar projetos, consultar quadros Kanban e acompanhar a evolução geral das atividades.
+- **Responsável por Atividade:** Pessoa associada (atribuída) a um cartão. Utiliza o sistema para acompanhar seus prazos, prioridades, descrições e o estado atual da atividade.
+- **Gestor do Projeto:** Pessoa com autoridade para organizar quadros, estruturar raias e colunas, definir limites de trabalho em andamento (*WIP limits*) e analisar as métricas de fluxo.
+- **Equipe de Desenvolvimento e Manutenção:** Grupo responsável por implementar, testar, manter e evoluir as funcionalidades do sistema e sua infraestrutura.
+- **Professor Avaliador:** Parte interessada primária na verificação qualitativa dos artefatos de Engenharia de Software produzidos, na funcionalidade do protótipo e nas evidências de gerenciamento do projeto.
 
-Pessoa que acessa o sistema para visualizar projetos, consultar quadros e acompanhar atividades.
+## Ambiente de Uso
 
-### Responsavel por atividade
+O sistema será utilizado através de navegadores *web* modernos, com interface otimizada preferencialmente para ambientes *desktop* ou *notebooks*. O foco do protótipo é demonstrar os serviços principais operando de forma perfeitamente integrada, unindo interface de usuário (UI), regras de negócio e persistência de dados em um ambiente funcional.
 
-Pessoa associada a um cartao. Usa o sistema para acompanhar prazos, prioridade, descricao e estado da atividade.
+## Necessidades Principais
 
-### Gestor do projeto
+- Autenticar usuários de forma segura.
+- Permitir *login* federado com o Google (via OAuth) quando as credenciais estiverem configuradas.
+- Criar, editar e gerenciar quadros Kanban.
+- Criar, configurar e gerenciar raias verticais/horizontais.
+- Cadastrar e detalhar cartões de atividade.
+- Movimentar cartões de forma fluida entre colunas e raias.
+- Configurar e impor limites de *Work in Progress* (WIP) por coluna.
+- Calcular e exibir métricas fundamentais do método Kanban.
 
-Pessoa que organiza quadros, raias, colunas, limites WIP e acompanha metricas de fluxo.
+## Funcionalidades Resumidas
 
-### Equipe de desenvolvimento e manutencao
+O Wiigu deve prover gestão de identidade através de cadastro local, *login* e *logout*. Como complemento, o sistema oferecerá a opção de *login* federado com contas Google (OAuth). 
 
-Responsavel por implementar, testar, manter e evoluir o sistema.
+Após a autenticação, o usuário poderá gerenciar seus projetos: criar novos quadros Kanban, definir a estrutura de raias, cadastrar cartões com informações detalhadas e promover a movimentação de atividades conforme a progressão do trabalho. 
 
-### Professor avaliador
+Para aderência aos requisitos do domínio, cada quadro Kanban do protótipo deverá instanciar, por padrão, as colunas obrigatórias `A FAZER`, `FAZENDO` e `FEITO`. O sistema também registrará o histórico de eventos de cada cartão em nível de banco de dados, coletando informações suficientes para o cálculo das métricas: *Lead Time*, *Cycle Time*, *Throughput* (Vazão) e *WIP* (Trabalho em Progresso).
 
-Parte interessada na verificacao dos artefatos de Engenharia de Software, do prototipo funcional e das evidencias de gerenciamento.
+## Requisitos Não Funcionais Resumidos
 
-## Ambiente de uso
+O protótipo deve atender aos seguintes atributos de qualidade:
+- **Usabilidade:** A interface deve ser simples, limpa e coerente com a proposta de gestão visual, facilitando o aprendizado rápido por novos usuários.
+- **Desempenho (Eficiência):** O sistema deve responder de forma rápida e adequada para as operações comuns de movimentação de cards (drag-and-drop ou ações de clique).
+- **Segurança:** O acesso às informações deve ser protegido por autenticação (sessões locais e federadas).
+- **Confiabilidade:** Os dados devem ser consistentes e persistidos de forma segura no banco de dados, evitando perda de informações do fluxo de trabalho.
 
-O sistema sera usado em navegador web, preferencialmente em ambiente desktop ou notebook. O foco do prototipo e demonstrar os servicos principais de forma integrada, com interface, regra de negocio e persistencia funcionando em conjunto.
+## Escopo da Solução
 
-## Necessidades principais
+**Incluído no escopo (In-Scope):**
+- Aplicação *web* funcional e navegável;
+- Persistência de dados em banco relacional;
+- Operações de CRUD (Criar, Ler, Atualizar, Excluir) das principais entidades;
+- Implementação das colunas obrigatórias (`A FAZER`, `FAZENDO` e `FEITO`) nos quadros;
+- Movimentação de cartões pelo fluxo;
+- Implementação de limites WIP;
+- Cálculo e exibição de métricas Kanban (*Lead/Cycle Time*);
+- *Login* configurável via Google OAuth;
+- Todos os documentos de Engenharia de Software exigidos;
+- Vídeo demonstrativo com a execução técnica de testes de sistema.
 
-- Autenticar usuarios.
-- Permitir login federado com Google quando houver credenciais configuradas.
-- Criar e gerenciar quadros Kanban.
-- Criar e gerenciar raias.
-- Criar e gerenciar cartoes de atividade.
-- Mover cartoes entre colunas.
-- Mover cartoes entre raias.
-- Definir limite WIP por coluna.
-- Visualizar metricas Kanban.
+**Fora do escopo (Out-of-Scope):**
+- Notificações em tempo real (ex: *WebSockets* ou e-mails transacionais);
+- Integrações complexas com sistemas externos (exceção feita apenas à API de autenticação do Google);
+- Controle avançado e granular de permissões (RBAC complexo);
+- Desenvolvimento de aplicativo móvel nativo (iOS/Android);
+- Geração de relatórios analíticos avançados ou gráficos customizáveis.
 
-## Funcionalidades resumidas
+## Critérios de Conclusão
 
-O Wiigu deve permitir cadastro, login local e logout. Quando houver credenciais OAuth configuradas, o sistema tambem pode permitir login federado com Google. Apos autenticado, o usuario deve acessar projetos, criar quadros Kanban, configurar raias, cadastrar cartoes e movimentar atividades conforme o andamento do trabalho.
-
-Cada quadro Kanban do prototipo deve conter as colunas obrigatorias `A FAZER`, `FAZENDO` e `FEITO`. O sistema tambem deve registrar informacoes suficientes para calcular lead time, cycle time, throughput e work-in-progress.
-
-## Requisitos nao funcionais resumidos
-
-O prototipo deve ser simples de usar, responder de forma adequada para operacoes comuns, proteger o acesso por autenticacao basica e manter os dados persistidos. A interface deve ser coerente, legivel e compativel com a proposta de gestao visual.
-
-## Escopo da solucao
-
-Incluido no escopo:
-
-- aplicacao web funcional;
-- persistencia de dados;
-- CRUD das principais entidades;
-- colunas obrigatorias A FAZER, FAZENDO e FEITO em cada quadro;
-- movimentacao de cartoes;
-- limite WIP;
-- metricas Kanban;
-- login Google configuravel como complemento de autenticacao;
-- documentos de Engenharia de Software exigidos;
-- video demonstrativo com testes de sistema.
-
-Fora do escopo:
-
-- notificacoes em tempo real;
-- integracoes externas obrigatorias para executar os servicos principais;
-- controle avancado de permissoes;
-- aplicativo movel nativo;
-- relatorios analiticos avancados.
-
-## Criterios de conclusao
-
-Este documento estara concluido quando todos os elementos exigidos pelo Vision estiverem descritos e quando suas funcionalidades estiverem rastreadas para historias de usuario, UX, banco, prototipo e testes.
+Este documento será considerado concluído quando todos os elementos exigidos pela especificação da "Visão" estiverem descritos, revisados ortograficamente e quando suas funcionalidades macro estiverem corretamente rastreadas e mapeadas para as Histórias de Usuário, Documentação de Arquitetura, UX, Banco de Dados, Protótipo Funcional e Roteiros de Testes.

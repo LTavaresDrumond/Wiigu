@@ -2,109 +2,88 @@
 
 ## Finalidade
 
-Este documento descreve como o trabalho de desenvolvimento do Wiigu sera gerenciado. O objetivo e registrar o processo usado pela equipe, as colunas do quadro Kanban, os tipos de cartoes e os criterios usados para acompanhar a evolucao do projeto.
+Este documento descreve como o trabalho de desenvolvimento do sistema Wiigu será gerenciado. O objetivo é registrar o processo metodológico adotado pela equipe, a configuração das colunas do quadro Kanban, as tipologias de cartões de trabalho e os critérios utilizados para acompanhar e auditar a evolução do projeto acadêmico.
 
 ## Contexto
 
-O Wiigu e um sistema de apoio a gestao de projetos por Kanban. O nome foi adotado pela equipe por remeter a ideia de uniao, colaboracao e trabalho em conjunto. No contexto do sistema, essa ideia representa pessoas, atividades e projetos reunidos em um fluxo visual de acompanhamento.
+O Wiigu é um sistema de apoio à gestão de projetos baseado na metodologia Kanban. O nome foi adotado pela equipe por remeter à ideia de união, colaboração e trabalho em conjunto. No contexto do sistema, essa ideia representa pessoas, atividades e projetos reunidos em um fluxo visual de acompanhamento transparente.
 
-O projeto sera conduzido de forma iterativa e incremental. Cada ciclo de trabalho deve gerar um incremento verificavel: um documento revisado, uma decisao arquitetural registrada, uma tela especificada, uma funcionalidade implementada ou uma evidencia de teste.
+O projeto será conduzido de forma iterativa e incremental. Cada ciclo de trabalho deve gerar um incremento verificável: um documento revisado, uma decisão arquitetural registrada, uma tela especificada, uma funcionalidade implementada ou uma evidência de teste executado.
 
-Neste trabalho, existem dois usos do termo Kanban. O primeiro e o Kanban usado pela equipe para gerenciar a execucao do trabalho academico no Agiflow. O segundo e o Kanban implementado pelo proprio sistema Wiigu, no qual cada quadro do usuario deve possuir as colunas obrigatorias `A FAZER`, `FAZENDO` e `FEITO`.
+Neste trabalho, é fundamental distinguir dois usos do termo "Kanban":
+1. **Kanban de Gerenciamento:** O quadro adotado pela equipe para gerenciar a execução do trabalho acadêmico (operacionalizado na ferramenta Agiflow).
+2. **Kanban do Sistema:** A funcionalidade central implementada pelo próprio software Wiigu, no qual cada quadro de usuário deve possuir as colunas obrigatórias `A FAZER`, `FAZENDO` e `FEITO`.
 
-## Abordagem de gerenciamento
+## Abordagem de Gerenciamento
 
-A equipe usa o Agiflow como quadro Kanban do projeto. O quadro registra as atividades do trabalho academico e funciona como evidencia de gerenciamento.
+A equipe utiliza a ferramenta Agiflow como quadro Kanban do projeto. O quadro registra todas as atividades do escopo acadêmico e funciona como o principal artefato de evidência de gerenciamento.
 
-A abordagem combina:
+A abordagem combina práticas consagradas na Engenharia de Software:
+- **Kanban:** Para visualização do fluxo de valor, identificação de gargalos e monitoramento do estado de cada atividade.
+- **Práticas Ágeis (inspiradas no *Scrum*):** Planejamento estruturado em iterações curtas (*sprints*) e revisão técnica ao final de cada ciclo de entrega.
+- **Conceitos do PMBOK:** Controle de escopo, acompanhamento de prazos, gestão da qualidade, plano de comunicação e mitigação de riscos.
+- **Áreas de Conhecimento do SWEBOK:** Requisitos, *design*, construção, testes, qualidade e gerenciamento de projeto.
 
-- Kanban, para visualizar fluxo, gargalos e estado de cada atividade;
-- praticas ageis inspiradas em Scrum, principalmente planejamento em sprints curtas e revisao ao final de cada ciclo;
-- conceitos do PMBOK, como controle de escopo, acompanhamento de prazo, gestao de qualidade, comunicacao e riscos;
-- areas do SWEBOK, como requisitos, design, construcao, testes, qualidade e gerenciamento de projeto.
+O processo adota uma abordagem adaptada e enxuta, sem a atribuição formal de papéis rígidos (como *Scrum Master* ou *Product Owner*). A escolha priorizou um modelo ágil adequado ao escopo e tempo do trabalho acadêmico, com foco na rastreabilidade e na qualidade da entrega dos artefatos avaliativos.
 
-O processo nao e tratado como Scrum completo, pois nao ha definicao formal de papeis como Scrum Master e Product Owner. A escolha foi usar um processo simples, adequado ao tamanho do trabalho, com foco em rastreabilidade e entrega dos artefatos avaliativos.
+## Colunas do Quadro (Fluxo de Trabalho)
 
-## Colunas do quadro
+As etapas descritas abaixo compõem o quadro de gerenciamento do trabalho acadêmico no Agiflow, mapeando o ciclo de vida das tarefas:
 
-As colunas descritas abaixo pertencem ao quadro de gerenciamento do trabalho academico no Agiflow.
+- **Planning (Planejamento):** Representa atividades mapeadas, mas que ainda não estão prontas para execução. Contém itens que necessitam de refinamento, definição de critérios de aceite ou confirmação de prioridade.
+- **Todo (A Fazer):** Representa atividades refinadas e prontas para execução. Um cartão só avança para `Todo` quando possui descrição suficiente, prioridade estabelecida e critério claro de conclusão.
+- **In Progress (Em Progresso):** Representa atividades atualmente em execução pela equipe. Mantém-se um limite de trabalho em andamento (*WIP - Work in Progress*) para evitar gargalos, atrasos e retrabalho.
+- **Testing (Em Verificação/Testes):** Representa atividades concluídas que exigem verificação. Para documentos textuais, indica a etapa de revisão de consistência, coesão, ortografia e aderência aos requisitos. Para o protótipo, indica a execução dos testes sistêmicos e funcionais.
+- **Review (Revisão Final):** Representa atividades prontas para aprovação final. O foco nesta etapa é assegurar que o artefato atende plenamente aos critérios de avaliação da disciplina e mantém coerência com a base documental e o código.
+- **Done (Concluído):** Representa atividades finalizadas e validadas. O cartão só é movido para `Done` após a geração da evidência correspondente e validação total dos critérios de aceite.
+- **Blocked (Impedido):** Representa atividades paralisadas temporariamente devido à falta de informações, dependências externas a outras tarefas, decisões pendentes ou impedimentos técnicos.
 
-### Planning
+## Tipos de Cartão e Frentes de Trabalho
 
-Representa atividades planejadas, mas ainda nao prontas para execucao. Nesta coluna ficam itens que precisam de refinamento, criterios de aceite ou confirmacao de prioridade.
+Os cartões (tarefas) do projeto foram categorizados logicamente por frentes de atuação para facilitar a rastreabilidade:
 
-### Todo
+- Gestão e Gerenciamento;
+- Engenharia de Requisitos;
+- Arquitetura de Software;
+- Modelagem de Banco de Dados;
+- *Design* de Interface (UX/UI);
+- Desenvolvimento (Construção);
+- Qualidade e Testes;
+- Empacotamento e Entrega Final.
 
-Representa atividades prontas para serem executadas. Um cartao so deve entrar em `Todo` quando tiver descricao suficiente, prioridade definida e criterio claro de conclusao.
+Essa taxonomia padronizada permite segmentar o progresso, otimizando a divisão de responsabilidades entre documentação, prototipação e verificação.
 
-### In Progress
+## Work Units (Unidades de Trabalho) no Agiflow
 
-Representa atividades em execucao. A equipe deve evitar manter muitas tarefas simultaneas nesta coluna, pois isso aumenta o risco de atraso e retrabalho.
+Para fins de organização macro, as frentes de trabalho foram agrupadas em seis Épicos ou Unidades de Trabalho (*Work Units*):
 
-### Testing
-
-Representa atividades que precisam de verificacao. Para documentos, essa coluna indica revisao de consistencia, linguagem e aderencia ao enunciado. Para o prototipo, indica execucao de testes funcionais.
-
-### Review
-
-Representa atividades prontas para revisao final. Nesta etapa, o foco e conferir se o item atende aos criterios de avaliacao e se esta coerente com os demais artefatos.
-
-### Done
-
-Representa atividades concluidas e verificadas. Um cartao so deve ir para `Done` quando houver evidencia produzida e quando os criterios de aceite forem atendidos.
-
-### Blocked
-
-Representa atividades impedidas por falta de informacao, dependencia externa, decisao pendente ou problema tecnico.
-
-## Tipos de cartao
-
-Os cartoes do projeto foram organizados por frente de trabalho:
-
-- gerenciamento;
-- requisitos;
-- arquitetura;
-- banco de dados;
-- UX;
-- desenvolvimento;
-- testes;
-- entrega final.
-
-Cada cartao deve conter titulo, descricao, prioridade, tags, frente de trabalho e criterio de conclusao. Essa padronizacao permite acompanhar o progresso e facilita a divisao entre as frentes de documentacao, UX e desenvolvimento.
-
-## Work units no Agiflow
-
-As tarefas foram agrupadas em seis unidades de trabalho:
-
-1. Gestao do Projeto ESW.
+1. Gestão do Projeto ESW.
 2. Requisitos do Sistema Wiigu.
-3. Arquitetura e Projeto Fisico.
+3. Arquitetura e Projeto Físico.
 4. Projeto de Interface e UX.
-5. Prototipo Funcional do Wiigu.
-6. Testes, Video e Entrega Final.
+5. Protótipo Funcional do Wiigu.
+6. Testes, Vídeo e Entrega Final.
 
-Essa divisao separa as responsabilidades sem perder a integracao entre os artefatos. A frente de requisitos orienta arquitetura e UX. A arquitetura e o banco orientam o desenvolvimento. O prototipo implementado orienta testes, video e infraestrutura.
+Essa estruturação assegura a integração contínua. Por exemplo: o refinamento de Requisitos orienta diretamente a Arquitetura e a UX; as decisões de Arquitetura e Banco de Dados balizam o Desenvolvimento; e a implementação do Protótipo serve de base estrita para a elaboração dos Testes e da Infraestrutura.
 
-## Criterios de conclusao do gerenciamento
+## Informações Registradas em Cada Cartão
 
-O gerenciamento do projeto sera considerado concluido quando:
+Para garantir clareza e conformidade com as boas práticas, todo cartão criado no Agiflow deve obrigatoriamente registrar os seguintes metadados:
 
-- o quadro Kanban estiver criado no Agiflow;
-- as colunas do fluxo estiverem descritas;
-- os cartoes principais do trabalho estiverem registrados;
-- cada cartao tiver descricao, prioridade e frente de trabalho;
-- os documentos finais citarem o mesmo processo de gerenciamento.
+- **Título:** Identificação clara e objetiva da atividade.
+- **Descrição:** Detalhamento técnico do que precisa ser realizado.
+- **Frente de Trabalho:** A categoria à qual a tarefa pertence (Ex: Requisitos, Banco de Dados).
+- **Prioridade:** Nível de urgência e importância no ciclo atual.
+- **Status:** Coluna atual no fluxo de trabalho.
+- **Critérios de Aceite:** Condições exatas para que a tarefa seja considerada pronta (*Definition of Done*).
+- **Artefato Relacionado:** *Link* ou indicação do arquivo no repositório gerado pela atividade (quando aplicável).
 
-## Informacao registrada em cada cartao
+## Critérios de Conclusão do Gerenciamento
 
-Cada cartao do Agiflow deve registrar:
+O gerenciamento do projeto (como meta avaliativa) será considerado satisfatoriamente documentado e implementado quando:
 
-- titulo da atividade;
-- descricao do trabalho;
-- frente de trabalho;
-- prioridade;
-- status;
-- criterios de aceite;
-- artefato relacionado, quando aplicavel.
-
-Esse registro atende a instrucao de prover informacao sobre cada cartao criado para o gerenciamento do projeto.
+- O quadro Kanban estiver instanciado e configurado na plataforma Agiflow;
+- As colunas e o fluxo de trabalho estiverem mapeados e em conformidade com este documento;
+- Os cartões fundamentais do escopo acadêmico estiverem registrados;
+- Todos os cartões possuírem título, descrição, prioridade, frentes de trabalho e critérios de aceite preenchidos;
+- Os documentos finais e apresentações apresentarem rastreabilidade e refletirem o processo iterativo e de controle estabelecido.

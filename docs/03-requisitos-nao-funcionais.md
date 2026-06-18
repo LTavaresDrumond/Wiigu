@@ -1,115 +1,95 @@
-# Requisitos Nao Funcionais
+# Requisitos Não Funcionais e Funcionais Complementares
 
 ## Finalidade
 
-Este documento define os requisitos nao funcionais do Wiigu e registra requisitos funcionais complementares que nao estejam suficientemente detalhados nas historias de usuario. O conteudo orienta arquitetura, interface, implementacao, testes e implantacao.
+Este documento define os requisitos não funcionais (atributos de qualidade e restrições) do sistema Wiigu e registra os Requisitos Funcionais Complementares (RFCs) que são de natureza global e não estão restritos a uma única história de usuário. O conteúdo aqui especificado orienta as decisões de arquitetura, o *design* da interface, a implementação, os testes e a implantação.
 
-## Requisitos funcionais complementares
+---
 
-### RFC-01: Colunas obrigatorias do quadro
+## Requisitos Funcionais Complementares (RFC)
 
-Cada quadro Kanban criado no Wiigu deve possuir as colunas `A FAZER`, `FAZENDO` e `FEITO`.
+### RFC-01: Colunas Obrigatórias do Quadro
+Cada quadro Kanban criado no sistema Wiigu deve possuir as colunas padrão: `A FAZER`, `FAZENDO` e `FEITO`.
+**Critério de verificação:** Ao criar um novo quadro, as três colunas devem estar instanciadas automaticamente e disponíveis para receber cartões.
 
-Criterio de verificacao: ao criar um quadro, as tres colunas devem estar disponiveis para receber cartoes.
+### RFC-02: Participação em Projetos
+Cada usuário pode participar de um ou mais projetos cadastrados no sistema.
+**Critério de verificação:** O sistema deve permitir a associação de usuários a projetos ou, no escopo do protótipo, representar e persistir corretamente essa relação no banco de dados.
 
-### RFC-02: Participacao em projetos
+### RFC-03: Identificação de Cartões
+Cada cartão de atividade deve conter: identificador único, título/nome, responsável atribuído, data limite para término, prioridade e descrição detalhada.
+**Critério de verificação:** O formulário de criação e a interface de visualização do cartão devem contemplar e exibir todos esses dados.
 
-Cada usuario pode participar de um ou mais projetos.
+### RFC-04: Bloqueio por Limite WIP (*Work in Progress*)
+Quando uma coluna possuir um limite WIP definido e esse limite já tiver sido atingido, o sistema deve impedir a entrada de novos cartões nessa referida coluna.
+**Critério de verificação:** Ao tentar criar ou arrastar um cartão para uma coluna que já atingiu seu limite, o sistema deve exibir uma mensagem de erro/alerta e retornar o cartão para sua posição original.
 
-Criterio de verificacao: o sistema deve permitir associar usuarios a projetos ou, no prototipo, representar essa relacao de forma persistida.
+### RFC-05: Login Google Configurável (OAuth)
+O sistema pode oferecer a funcionalidade de *login* federado com o Google, desde que o *OAuth Client ID* esteja configurado nos ambientes de *frontend* e *backend*.
+**Critério de verificação:** Sem as variáveis de ambiente, apenas o *login* local permanece disponível; com as variáveis corretamente configuradas, o *token* do Google deve ser recebido, decodificado e validado pelo servidor.
 
-### RFC-03: Identificacao de cartoes
+---
 
-Cada cartao de atividade deve conter identificador, nome, responsavel, data limite para termino, prioridade e descricao.
+## Requisitos Não Funcionais (RNF)
 
-Criterio de verificacao: o formulario de cartao e a visualizacao do cartao devem contemplar esses dados.
+### Atributos de Qualidade
 
-### RFC-04: Bloqueio por limite WIP
+### RNF-01: Usabilidade
+O sistema deve apresentar uma interface clara e intuitiva, permitindo uma navegação simples entre projetos, quadros, raias, colunas e cartões.
+**Critério de verificação:** Um usuário recém-cadastrado deve conseguir criar um projeto, acessar um quadro, cadastrar um cartão e movimentá-lo sem a necessidade de consultar documentações externas ou manuais.
 
-Quando uma coluna possui limite WIP definido e esse limite ja foi atingido, o sistema deve impedir a entrada de novos cartoes nessa coluna.
+### RNF-02: Legibilidade Visual
+O quadro Kanban deve permitir a rápida identificação visual de colunas, raias, cartões, prioridades, responsáveis e datas limites.
+**Critério de verificação:** As informações essenciais do cartão (título, responsável, prioridade) devem estar claramente visíveis na tela principal do quadro, sem a necessidade de abrir os detalhes do *card*.
 
-Criterio de verificacao: ao tentar criar ou mover cartao para uma coluna no limite, o sistema deve exibir erro e manter o cartao na posicao anterior.
+### RNF-03: Desempenho
+As operações comuns do protótipo devem responder em tempo adequado para proporcionar uma demonstração acadêmica fluida.
+**Critério de verificação:** As ações de cadastro, *login*, consulta de quadros, criação de cartões e movimentação entre colunas devem ocorrer sem tempo de espera perceptível (*delay*) em um ambiente de execução local.
 
-### RFC-05: Login Google configuravel
+### RNF-04: Segurança
+O sistema deve restringir o acesso às suas funcionalidades principais apenas a usuários devidamente autenticados.
+**Critério de verificação:** Usuários anônimos (não autenticados) não devem conseguir acessar rotas privadas de quadros, projetos ou manipular cartões, sendo redirecionados para a tela de *login*.
 
-O sistema pode oferecer login com Google quando houver OAuth Client ID configurado no frontend e no backend.
+### RNF-05: Persistência e Confiabilidade
+Os dados principais do fluxo de trabalho devem ser armazenados de forma persistente e consistente em um banco de dados relacional para permitir consultas posteriores.
+**Critério de verificação:** Projetos, quadros, raias, cartões e suas respectivas movimentações devem permanecer intactos e disponíveis mesmo após o encerramento da sessão ou reinicialização da aplicação.
 
-Criterio de verificacao: sem as variaveis de ambiente, o login local permanece disponivel; com as variaveis configuradas, o token Google deve ser validado no servidor.
+### RNF-06: Manutenibilidade e Arquitetura
+O código-fonte do protótipo deve respeitar o princípio da separação de responsabilidades (Interface, Regras de Negócio e Persistência).
+**Critério de verificação:** A estrutura de diretórios do projeto deve permitir identificar claramente as camadas ou módulos relacionados à apresentação (*frontend/UI*), ao domínio (*backend/services*) e ao acesso a dados (*database/repositories*).
 
-## RNF-01: Usabilidade
+---
 
-O sistema deve apresentar interface clara, com navegacao simples entre projetos, quadros, raias, colunas e cartoes.
+### Requisitos de Interface e Integração
 
-Criterio de verificacao: um usuario deve conseguir criar um projeto, acessar um quadro, criar um cartao e mover esse cartao sem consultar documentacao externa.
+### RNF-07: Interface com o Usuário
+O sistema deve oferecer uma interface gráfica *web* padronizada para acesso a todos os serviços principais.
+**Critério de verificação:** Todos os fluxos operacionais (autenticação, manipulação de quadros, raias, cartões, configuração de WIP e visualização de métricas) devem ser realizáveis através de telas interativas do protótipo.
 
-## RNF-02: Legibilidade visual
+### RNF-08: Compatibilidade
+O sistema deve funcionar adequadamente nos navegadores *web* modernos voltados para ambiente *desktop*.
+**Critério de verificação:** A demonstração final deve ser executada corretamente e sem quebras de *layout* em navegadores atualizados (como Google Chrome, Firefox ou Edge).
 
-O quadro Kanban deve permitir identificar rapidamente colunas, raias, cartoes, prioridade, responsavel e data limite.
+### RNF-09: Interface com Dispositivos Externos
+O sistema não exige integração com dispositivos de *hardware* externos, dependendo apenas dos periféricos padrão de navegação (teclado, *mouse* e monitor).
+**Critério de verificação:** O documento de infraestrutura deve declarar explicitamente a ausência de dependência de dispositivos físicos específicos (como leitor biométrico ou impressoras).
 
-Criterio de verificacao: as informacoes essenciais do cartao devem estar visiveis na tela principal do quadro.
+### RNF-10: Interface com Outros Sistemas
+O protótipo deve operar de forma autônoma, não exigindo integração obrigatória com sistemas de terceiros para a execução dos seus fluxos críticos. A integração com o Google (OAuth) deve ser tratada como um módulo opcional.
+**Critério de verificação:** A arquitetura do sistema deve permitir a inicialização e o uso local pleno como uma aplicação independente, documentando a integração do Google de forma isolada.
 
-## RNF-03: Desempenho
+---
 
-As operacoes comuns do prototipo devem responder em tempo adequado para demonstracao academica.
+### Restrições de Projeto e Padrões
 
-Criterio de verificacao: cadastro, login, consulta de quadro, criacao de cartao e movimentacao devem ocorrer sem espera perceptivel em ambiente local.
+### RNF-11: Normas, Padrões e Terminologia
+O projeto deve adotar terminologia técnica rigorosa e produzir artefatos perfeitamente compatíveis com a disciplina de Engenharia de Software (abrangendo requisitos, arquitetura, testes e gestão).
+**Critério de verificação:** Toda a base documental deve fazer uso correto de termos fundamentados em referenciais teóricos consagrados, como SWEBOK, PMBOK, Sommerville e Pressman, sempre que aplicável.
 
-## RNF-04: Seguranca
+### RNF-12: Documentação
+O projeto deve manter um repositório documental completo e autossuficiente para explicar a Engenharia de Requisitos, Arquitetura, Modelagem de Dados, UX, Roteiros de Testes e Infraestrutura.
+**Critério de verificação:** Cada exigência da matriz de avaliação acadêmica deve possuir o seu artefato (*PDF*) correspondente na pasta `docs/`.
 
-O sistema deve restringir o acesso as funcionalidades principais a usuarios autenticados.
-
-Criterio de verificacao: usuarios nao autenticados nao devem acessar quadros, projetos ou cartoes.
-
-## RNF-04A: Interface com usuario
-
-O sistema deve oferecer interface grafica web para acesso aos servicos principais.
-
-Criterio de verificacao: os fluxos de autenticacao, quadro, raia, cartao, WIP e metricas devem estar acessiveis por telas do prototipo.
-
-## RNF-05: Persistencia
-
-Os dados principais devem ser armazenados de forma persistente para permitir consulta posterior.
-
-Criterio de verificacao: projetos, quadros, raias, cartoes e movimentacoes devem permanecer disponiveis apos recarregar a aplicacao.
-
-## RNF-06: Manutenibilidade
-
-O codigo do prototipo deve separar interface, regras de negocio e persistencia.
-
-Criterio de verificacao: a estrutura do projeto deve permitir identificar claramente camadas ou modulos relacionados a apresentacao, dominio e acesso a dados.
-
-## RNF-07: Compatibilidade
-
-O sistema deve funcionar em navegador web moderno.
-
-Criterio de verificacao: a demonstracao deve executar corretamente em navegador desktop atualizado.
-
-## RNF-07A: Interface com dispositivos externos
-
-O sistema nao exige integracao com dispositivos externos alem dos dispositivos padrao usados pelo navegador, como teclado, mouse e tela.
-
-Criterio de verificacao: a infraestrutura deve declarar que nao ha dependencia de dispositivo externo especifico.
-
-## RNF-07B: Interface com outros sistemas
-
-O prototipo nao exige integracao obrigatoria com sistemas externos para executar os servicos principais. O login com Google e uma integracao opcional.
-
-Criterio de verificacao: a arquitetura deve tratar o sistema como aplicacao autonoma para fins de demonstracao e documentar a configuracao opcional do Google OAuth.
-
-## RNF-07C: Normas, padroes e metricas
-
-O projeto deve adotar terminologia e artefatos compatíveis com a disciplina de Engenharia de Software, considerando requisitos, arquitetura, design, testes, qualidade, processo e gerenciamento.
-
-Criterio de verificacao: os documentos devem usar termos coerentes com SWEBOK, PMBOK, Sommerville e Pressman quando aplicavel.
-
-## RNF-08: Documentacao
-
-O projeto deve manter documentos suficientes para explicar requisitos, arquitetura, banco de dados, UX, testes e infraestrutura.
-
-Criterio de verificacao: cada bloco avaliativo deve possuir artefato correspondente.
-
-## RNF-09: Licenciamento e restricoes
-
-O prototipo deve usar ferramentas e bibliotecas adequadas ao contexto academico, evitando dependencias que impeçam demonstracao, distribuicao ou execucao local.
-
-Criterio de verificacao: as tecnologias usadas devem ser listadas no documento de arquitetura e infraestrutura.
+### RNF-13: Licenciamento e Restrições Tecnológicas
+O protótipo deve utilizar linguagens, bibliotecas e ferramentas de código aberto (*Open Source*) adequadas ao contexto educacional.
+**Critério de verificação:** O documento de arquitetura não deve conter tecnologias pagas ou licenciadas que impeçam a avaliação, distribuição livre ou execução local do sistema pelos avaliadores.
